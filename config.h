@@ -13,7 +13,7 @@ static const int systraypinningfailfirst  = 1;      /* 1: if pinning fails, disp
 static const int showsystray              = 1;      /* 0 means no systray */
 static const int showbar                  = 1;      /* 0 means no bar */
 static const int topbar                   = 1;      /* 0 means bottom bar */
-static const char *fonts[]                = { "MesloLGS Nerd Font Mono:size=16", "NotoColorEmoji:pixelsize=16:antialias=true:autohint=true"  };
+static const char *fonts[]                = { "MesloLGS Nerd Font Mono:size=15", "NotoColorEmoji:pixelsize=16:antialias=true:autohint=true"  };
 static const char normbordercolor[]       = "#3B4252";
 static const char normbgcolor[]           = "#2E3440";
 static const char normfgcolor[]           = "#D8DEE9";
@@ -36,14 +36,16 @@ static const char *const autostart[] = {
   "flameshot", NULL,
   "dunst", NULL,
   "picom", "--animations", "-b", NULL,
-  "sh", "-c", "feh --randomize --bg-fill /home/titus/Pictures/backgrounds/*", NULL,
+  "sh", "-c", "~/.session", NULL,
+  "sh", "-c", "~/.fehbg", NULL,
+  "sh", "-c", "~/.scripts/clock-dwm.sh", NULL,
   "synergy", NULL,
   "slstatus", NULL,
   NULL /* terminate */
 };
 
 /* tagging */
-static const char *tags[] = { "", "", "", "", "" };
+static const char *tags[] = { "", "", "", "󰺵", "" };
 
 static const char ptagf[] = "[%s %s]";  /* format of a tag label */
 static const char etagf[] = "[%s]";     /* format of an empty tag */
@@ -90,22 +92,23 @@ static const char *termcmd[]  = { "kitty", NULL };
 
 static Key keys[] = {
 	/* modifier                     key            function                argument */
-	{ MODKEY,                       XK_r,          spawn,                  {.v = launchercmd} },
+	{ MODKEY,                            XK_s,        spawn,               {.v = launchercmd } },
 	{ MODKEY|ControlMask,           XK_r,          spawn,                  SHCMD ("protonrestart")},
-	{ MODKEY,                       XK_x,          spawn,                  {.v = termcmd } },
+	{ MODKEY,                       XK_t,          spawn,                  {.v = termcmd } },
 	{ MODKEY,                       XK_b,          spawn,                  SHCMD ("xdg-open https://")},
-	{ MODKEY,                       XK_p,          spawn,                  SHCMD ("flameshot full -p /media/drive/Screenshots/")},
-	{ MODKEY|ShiftMask,             XK_p,          spawn,                  SHCMD ("flameshot gui -p /media/drive/Screenshots/")},
-	{ MODKEY|ControlMask,           XK_p,          spawn,                  SHCMD ("flameshot gui --clipboard")},
 	{ MODKEY,                       XK_e,          spawn,                  SHCMD ("thunar")},
-	{ MODKEY,                       XK_w,          spawn,                  SHCMD ("looking-glass-client -F")},
-	{ 0,                            0x1008ff02,    spawn,                  SHCMD ("xbacklight -inc 10")},
-	{ 0,                            0x1008ff03,    spawn,                  SHCMD ("xbacklight -dec 10")},
-	{ 0,                            0x1008ff1b,    spawn,                  SHCMD ("xbacklight -inc 10")},
-	{ 0,                            0x1008ff8e,    spawn,                  SHCMD ("xbacklight -dec 10")},
-	{ 0,                            0x1008ff11,    spawn,                  SHCMD ("amixer sset Master 5%- unmute")},
-	{ 0,                            0x1008ff12,    spawn,                  SHCMD ("amixer sset Master $(amixer get Master | grep -q '\\[on\\]' && echo 'mute' || echo 'unmute')")},
-	{ 0,                            0x1008ff13,    spawn,                  SHCMD ("amixer sset Master 5%+ unmute")},
+	{ MODKEY,                       0xff61,        spawn,                  SHCMD ("flameshot full -p /home/riane/Pictures/Screenshots/")},
+	{ MODKEY|ShiftMask,             XK_s,          spawn,                  SHCMD ("flameshot gui")},
+	{ 0,                            0x1008ff02,    spawn,                  SHCMD ("brightnessctl set 5%+")},
+	{ 0,                            0x1008ff03,    spawn,                  SHCMD ("brightnessctl set 5%-")},
+	{ 0,                            0x1008ff02,    spawn,                  SHCMD ("brightnessctl set 5%+")},
+	{ 0,                            0x1008ff03,    spawn,                  SHCMD ("brightnessctl set 5%-")},
+	{ 0,                            0x1008ff11,    spawn,                  SHCMD ("~/.config/hypr/scripts/Volume.sh --dec")},
+	{ 0,                            0x1008ff12,    spawn,                  SHCMD ("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")},
+	{ 0,                            0x1008ff13,    spawn,                  SHCMD ("~/.config/hypr/scripts/Volume.sh --inc")},
+        { MODKEY,                       XK_p,          spawn,                  SHCMD ("wlogout")},
+	{ 0,                            0x1008ff14,    spawn,                  SHCMD ("playerctl play-pause")},
+	{ MODKEY,                       XK_v,          spawn,                  SHCMD ("~/.scripts/clipboard-dwm.sh")},
 	{ MODKEY|ShiftMask,             XK_b,          togglebar,              {0} },
 	{ MODKEY,                       XK_j,          focusstack,             {.i = +1 } },
 	{ MODKEY,                       XK_k,          focusstack,             {.i = -1 } },
@@ -114,17 +117,16 @@ static Key keys[] = {
 	{ MODKEY,                       XK_h,          setmfact,               {.f = -0.05} },
 	{ MODKEY,                       XK_l,          setmfact,               {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_h,          setcfact,               {.f = +0.25} },
-	{ MODKEY|ShiftMask,             XK_l,          setcfact,               {.f = -0.25} },
+	{ MODKEY,                       XK_l,          spawn,                  SHCMD ("slock")},
 	{ MODKEY|ShiftMask,             XK_o,          setcfact,               {.f =  0.00} },
 	{ MODKEY,                       XK_Return,     zoom,                   {0} },
 	{ MODKEY,                       XK_Tab,        view,                   {0} },
 	{ MODKEY,                       XK_q,          killclient,             {0} },
-	{ MODKEY,                       XK_t,          setlayout,              {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,          setlayout,              {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,          fullscreen,             {0} },
 	{ MODKEY,                       XK_space,      setlayout,              {0} },
-	{ MODKEY|ShiftMask,             XK_m,          togglefloating,         {0} },
-	{ MODKEY|ShiftMask,             XK_y,          togglefakefullscreen,   {0} },
+	{ MODKEY,                       XK_w,          togglefloating,         {0} },
+	{ MODKEY|ShiftMask,             0xff57,        togglefakefullscreen,   {0} },
 	{ MODKEY,                       XK_0,          view,                   {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,      focusmon,               {.i = -1 } },
@@ -137,8 +139,6 @@ static Key keys[] = {
 	TAGKEYS(                        XK_4,                                  3)
 	TAGKEYS(                        XK_5,                                  4)
 	{ MODKEY|ShiftMask,             XK_q,          quit,                   {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_r,          spawn,                  SHCMD("systemctl reboot")},
-	{ MODKEY|ControlMask|ShiftMask, XK_s,          spawn,                  SHCMD("systemctl suspend")},
 };
 
 /* button definitions */
@@ -152,7 +152,6 @@ static Button buttons[] = {
 	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
 	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
 	{ ClkClientWin,         MODKEY,         Button1,        moveorplace,    {.i = 2} },
-	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
 	{ ClkTagBar,            0,              Button1,        view,           {0} },
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
